@@ -9,6 +9,7 @@ based on equations from:
 """
 
 typeNACA='2412'
+aoa = 0 * np.pi/180
 
 Minit = int(typeNACA[0])
 Pinit = int(typeNACA[2])
@@ -44,6 +45,7 @@ for i in range(0,gridPts-1):
         yc[i] = M / (1-P)**2 * (1 - 2*P + 2*P*x[i] - x[i] * x[i])
         dyc_dx[i] = (2*M)/(1 - P)**2 * (P - x[i])
 
+yc = np.array(yc)
 theta = np.arctan(dyc_dx)
 
 yt = 5.* T * (a0*np.sqrt(x) \
@@ -59,6 +61,16 @@ yu = yc + yt * np.cos(theta)
 # lower surface points
 xl = x + yt * np.sin(theta)
 yl = yc - yt * np.cos(theta)
+
+# transform coordinates with angle of attack
+def rotate(x,y,phi):
+    x_new = x*np.cos(phi) - y*np.sin(phi)
+    y_new = x*np.sin(phi) + y*np.cos(phi) 
+    return x_new, y_new
+
+(xl, yl) = rotate(xl, yl, aoa)
+(xu, yu) = rotate(xu, yu, aoa)
+(x, yc) = rotate(x, yc, aoa)
 
 # Plot
 fig, ax = plt.subplots()
