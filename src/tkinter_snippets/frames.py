@@ -3,6 +3,7 @@ import tkinter as tk
 matplotlib.use('TkAgg')
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
+from matplotlib.ticker import (MultipleLocator, AutoMinorLocator)
 import numpy as np
 
 class PlotWindow():
@@ -11,11 +12,15 @@ class PlotWindow():
         (w,h) = size
         self.figure = Figure(size)
         self.axes = self.figure.add_subplot(111)
+        self.axes.set_facecolor('black')
 
         self.canvas = FigureCanvasTkAgg(self.figure, master=masterframe)
         self.canvas.get_tk_widget().pack()
         eqString=r'sin(4x) exp(-nx/10)'
-        self.axes.text(0.8, 0.95, eqString)
+        self.axes.text(1, 1.2, eqString)
+        self.axes.grid(color='grey')
+        # self.axes.xaxis.set_major_locator(MultipleLocator(np.pi))
+        # self.axes.xaxis.set_major_formatter('{x:.0f}')
 
     def plotxy(self, x,y):
         self.axes.plot(x,y)
@@ -55,7 +60,7 @@ if __name__ == "__main__":
     datgen = GenerateTestData()
 
     root = tk.Tk()
-    mf = tk.Frame()
+    mf = tk.Frame(root, width=400, height=100)
     pw = PlotWindow(mf, (10, 5))
     mf.grid(row=0, column=1)
 
