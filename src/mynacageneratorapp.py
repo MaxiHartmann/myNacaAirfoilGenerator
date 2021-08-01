@@ -1,50 +1,61 @@
 import tkinter as tk
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 class MyNacaGeneratorApp:
     def __init__(self, master=None):
+
         # build ui
         self.toplevel = tk.Tk() if master is None else tk.Toplevel(master)
         self.input_frame = tk.Frame(self.toplevel)
+        self.toplevel.title("4-Digits NACA Airfoil Generator")
+
+        self.typeNACA = '2412'
+        self.aoa = 0.0
+        self.gridPts = 50
+
+
+        # Input: NACA digits
         self.lbl_naca = tk.Label(self.input_frame)
         self.lbl_naca.configure(takefocus=False, text='NACA:')
         self.lbl_naca.grid(column='0', row='0')
         self.ent_naca = tk.Entry(self.input_frame)
         self.typeNACA = tk.StringVar(value='2412')
         self.ent_naca.configure(textvariable=self.typeNACA)
-        _text_ = '''2412'''
-        self.ent_naca.delete('0', 'end')
-        self.ent_naca.insert('0', _text_)
         self.ent_naca.grid(column='1', row='0')
+
+        # Input: Angle of attack
         self.lbl_aoa = tk.Label(self.input_frame)
         self.lbl_aoa.configure(text='Angle of Attack:')
         self.lbl_aoa.grid(column='0', row='1')
         self.ent_aoa = tk.Entry(self.input_frame)
         self.aoa = tk.DoubleVar(value=0.0)
         self.ent_aoa.configure(textvariable=self.aoa)
-        _text_ = '''0.0'''
-        self.ent_aoa.delete('0', 'end')
-        self.ent_aoa.insert('0', _text_)
         self.ent_aoa.grid(column='1', row='1')
+
+        # Input: Number of Points
         self.lbl_nbpts = tk.Label(self.input_frame)
         self.lbl_nbpts.configure(takefocus=True, text='Number of points:')
         self.lbl_nbpts.grid(column='0', row='2')
         self.ent_nbpts = tk.Entry(self.input_frame)
         self.gridPts = tk.IntVar(value=100)
         self.ent_nbpts.configure(textvariable=self.gridPts)
-        _text_ = '''100'''
-        self.ent_nbpts.delete('0', 'end')
-        self.ent_nbpts.insert('0', _text_)
         self.ent_nbpts.grid(column='1', row='2')
+
+        # update-button
         self.btn_update = tk.Button(self.input_frame)
         self.btn_update.configure(text='Update')
         self.btn_update.grid(column='0', row='3')
         self.btn_update.configure(command=self.update)
+        self.toplevel.bind("<Return>", self.update)
+
+        # save-button
         self.btn_save = tk.Button(self.input_frame)
         self.btn_save.configure(text='Save')
         self.btn_save.grid(column='1', row='3')
         self.btn_save.configure(command=self.save)
+
         self.input_frame.configure(height='200', padx='10', pady='10', width='200')
         self.input_frame.pack(side='left')
         self.plot_frame = tk.Frame(self.toplevel)
@@ -55,10 +66,15 @@ class MyNacaGeneratorApp:
 
         # Main widget
         self.mainwindow = self.toplevel
+
+    def update_values(self, event=None):
+        self.typeNACA = float(self.typeNACA.get())
+        self.plot_values()
+        return None
     
-    def update(self):
+    def update(self, event=None):
         typeNACA=self.typeNACA.get()
-        aoa=self.aoa.get()
+        aoa=self.aoa.get() * np.pi/180.
         gridPts=self.gridPts.get()
 
         Minit = int(typeNACA[0])
@@ -121,7 +137,21 @@ class MyNacaGeneratorApp:
         (xu, yu) = rotate(xu, yu, aoa)
         (x, yc) = rotate(x, yc, aoa)
 
-        
+        # Plotting
+        fig, ax = plt.subplots()
+        ax.grid()
+        ax.axis('equal')
+        ax.set_title('NACA: ' + typeNACA)
+        ax.set_xlim(0,1)
+        ax.plot(x, yc, '--', color='grey', linewidth=1)
+        ax.plot(xu, yu, 'r-', marker='|', markersize=5)
+        ax.plot(xl, yl, 'k-', marker='|', markersize=5)
+        ax.set_title("NACA " + self.typeNACA.get())
+
+        chart = FigureCanvasTkAgg(fig, self.plot_frame)
+        chart.get_tk_widget().grid(row=0, column=0)
+
+        return None
 
     def save(self):
         pass

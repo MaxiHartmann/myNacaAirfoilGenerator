@@ -65,7 +65,7 @@ yl = yc - yt * np.cos(theta)
 # transform coordinates with angle of attack
 def rotate(x,y,phi):
     x_new = x*np.cos(phi) - y*np.sin(phi)
-    y_new = x*np.sin(phi) + y*np.cos(phi) 
+    y_new = x*np.sin(phi) + y*np.cos(phi)
     return x_new, y_new
 
 (xl, yl) = rotate(xl, yl, aoa)
