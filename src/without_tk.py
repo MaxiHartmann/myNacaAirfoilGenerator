@@ -9,7 +9,7 @@ based on equations from:
 """
 
 typeNACA='2412'
-aoa = 0 * np.pi/180
+aoa = -5 * np.pi/180
 
 Minit = int(typeNACA[0])
 Pinit = int(typeNACA[2])
@@ -74,11 +74,14 @@ def rotate(x,y,phi):
 
 # Plot
 fig, ax = plt.subplots()
-ax.grid()
+# ax.grid()
 ax.axis('equal')
-ax.set_title('NACA: ' + typeNACA)
+# ax.set_title('NACA: ' + typeNACA)
 ax.set_xlim(0,1)
 ax.plot(x, yc, '--', color='grey', linewidth=1)
 ax.plot(xu, yu, 'r-', marker='|', markersize=5)
 ax.plot(xl, yl, 'k-', marker='|', markersize=5)
+# ax.fill_between(xu, yu, color='grey')
+# ax.fill_between(xl, yl, alpha=0.5, color='grey')
+ax.fill_between(x, yu, yl, color='green')
 plt.show()
