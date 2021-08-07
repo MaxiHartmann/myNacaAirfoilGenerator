@@ -1,5 +1,7 @@
 # myNacaAirfoilGenerator
 
-#TODO: ### **Finish up the support section of this doc**
-- [ ] NACA 4-Digit Airfoil: Calculation
-- [ ] tkinter-GUI
+#TODO:
+- [x] NACA 4-Digit Airfoil: Calculation
+- [x] tkinter-GUI
+- [ ] save option for coordinates in csv-format
+- [ ] improve GUI ...
